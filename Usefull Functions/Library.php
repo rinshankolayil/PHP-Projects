@@ -463,17 +463,11 @@ class Library
 		    'sid' => 'sid',
 		    'token' => "token",
 		    'phone_number_from' => "+00000",
-		    'Port' => "Port Number",
-		    'SMTPSecure' => "ssl/tls",
-		    'from_email' => 'email',
 		 ),
 		 'twilio_live' => array(
-		    'host' => 'smtp_provider e.g.smtp.gmail.com',
-		    'Username' => "email",
-		    'Password' => "app_password",
-		    'Port' => "Port Number",
-		    'SMTPSecure' => "ssl/tls",
-		    'from_email' => 'email',
+		    'sid' => 'sid',
+		    'token' => "token",
+		    'phone_number_from' => "+00000",
 		 ),
 	      );
 	      return $credentialsAr[$key];
