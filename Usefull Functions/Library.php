@@ -363,9 +363,9 @@ class Library
 		$credentials = array();
 		$credentials['Username'] = 'email';
 		$credentials['Password'] = 'app_password'; //test password // don't keep personal password for your security
-    $credentials['Port'] = 'Port number'; //test password // don't keep personal password for your security
-    $credentials['Host'] = 'smtp_provider e.g.smtp.gmail.com'; //test password // don't keep personal password for your security
-    $credentials['SMTPSecure'] = 'ssl/tls'; //test password // don't keep personal password for your security
+    		$credentials['Port'] = 'Port number'; //test password // don't keep personal password for your security
+    		$credentials['Host'] = 'smtp_provider e.g.smtp.gmail.com'; //test password // don't keep personal password for your security
+    		$credentials['SMTPSecure'] = 'ssl/tls'; //test password // don't keep personal password for your security
 		return $credentials;
 	}
 
