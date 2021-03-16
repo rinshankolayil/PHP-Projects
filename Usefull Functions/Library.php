@@ -479,7 +479,7 @@ class Library
 			require_once $this->lib_path ."PHPMailer/Exception.php";
 		}
 		else if($type == 'google_translate'){
-			require_once ($this->lib_path . 'GT/vendor/autoload.php');
+			require_once $this->lib_path . 'GT/vendor/autoload.php';
 		}
 		else if($type == 'twilio'){
 			require_once $this->lib_path . 'twilio/src/Twilio/autoload.php';
