@@ -24,20 +24,18 @@ class Library
 		$this->send_test = true
 		$this->from_email = "test@test.com";
 		$this->from_email_name = "tester";
-		$this->attachment = array();
 		$this->lib_path = 'PATH';
 	}
 
 	public function translate_text($source, $target, $text, $attempts){
-		require_once ($this->lib_path . '/GT/vendor/autoload.php');
+		$this->include_source('google_translate');
 		$tr = new GoogleTranslateForFree();
 		$result = $tr->translate($source, $target, $text, $attempts);
 		return $result; 
 	}
 
 	public function send_sms_twilio($number_to_send,$message){
-		$twilio_path = $this->lib_path . '/twilio/src/Twilio/autoload.php';
-		require_once($twilio_path);
+		$this->include_source('twilio');
 		$credentials = $this->credentials('twilio',true);
 		$sid = $credentials['sid'];
 		$token = $credentials['token'];
@@ -476,9 +474,15 @@ class Library
 	public function include_source($type  = 'php')
 	{
 		if ($type == 'php') {
-			require_once "PHPMailer/PHPMailer.php";
-			require_once "PHPMailer/SMTP.php";
-			require_once "PHPMailer/Exception.php";
+			require_once $this->lib_path ."PHPMailer/PHPMailer.php";
+			require_once $this->lib_path ."PHPMailer/SMTP.php";
+			require_once $this->lib_path ."PHPMailer/Exception.php";
+		}
+		else if($type == 'google_translate'){
+			require_once ($this->lib_path . '/GT/vendor/autoload.php');
+		}
+		else if($type == 'twilio'){
+			require_once $this->lib_path . '/twilio/src/Twilio/autoload.php';
 		}
 	}
 }
