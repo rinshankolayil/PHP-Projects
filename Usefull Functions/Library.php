@@ -385,8 +385,8 @@ class Library
 			    } else {
 			       $mail->addAddress($email, $name);
 			    }
-			 }
-		      }
+			}
+		}
 
 		if (count($attachments) > 0) {
 			foreach ($attachments as $key => $file_path) {
