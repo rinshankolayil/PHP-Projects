@@ -24,7 +24,7 @@ class Library
 		$this->send_test = true
 		$this->from_email = "test@test.com";
 		$this->from_email_name = "tester";
-		$this->lib_path = 'PATH';
+		$this->lib_path = 'PATH/';
 	}
 
 	public function translate_text($source, $target, $text, $attempts){
@@ -479,10 +479,10 @@ class Library
 			require_once $this->lib_path ."PHPMailer/Exception.php";
 		}
 		else if($type == 'google_translate'){
-			require_once ($this->lib_path . '/GT/vendor/autoload.php');
+			require_once ($this->lib_path . 'GT/vendor/autoload.php');
 		}
 		else if($type == 'twilio'){
-			require_once $this->lib_path . '/twilio/src/Twilio/autoload.php';
+			require_once $this->lib_path . 'twilio/src/Twilio/autoload.php';
 		}
 	}
 }
