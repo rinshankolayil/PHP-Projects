@@ -38,7 +38,7 @@ class Library
 	public function send_sms_twilio($number_to_send,$message){
 		$twilio_path = $this->lib_path . '/twilio/src/Twilio/autoload.php';
 		require_once($twilio_path);
-		$credentials = $this->twilio_access_token();
+		$credentials = $this->credentials('twilio',true);
 		$sid = $credentials['sid'];
 		$token = $credentials['token'];
 
@@ -347,10 +347,10 @@ class Library
 	{
 		// require $this->lib_path . 'phpmailer/PHPMailerAutoload.php';
 		$return_array = array();
-		$this->include_phpmailer();
+		$this->include_source();
 		$mail = new PHPMailer();
 		$mail->isSMTP();
-		$credentials = $this->mail_credentials();
+		$credentials = $this->credentials('mail');
 		$mail->Host = $credentials['Host'];
 		$mail->SMTPAuth = true;
 		$mail->Username = $credentials['Username'];
@@ -428,12 +428,12 @@ class Library
 		);
 	}
 
-	public function mail_credentials()
+	public function credentials($type = 'mail',$get_live_cred = false)
 	{
-		if (in_array($_SERVER['SERVER_NAME'],$this->test_servers)) {
-         		$credentials = $this->get_credentials('test');
+		if (in_array($_SERVER['SERVER_NAME'],$this->test_servers) && $get_live_cred == false) {
+         		$credentials = $this->get_credentials($type . '_test');
       		} else {
-         		$credentials = $this->get_credentials('live');
+         		$credentials = $this->get_credentials($type.'_live');
       		}
 
       		$this->from_email = $credentials['from_email'];
@@ -443,7 +443,7 @@ class Library
 	{
 	      //https://www.powershellgallery.com/packages/ExchangeOnlineManagement/2.0.3
 	      $credentialsAr = array(
-		 'live' => array(
+		 'mail_live' => array(
 		    'host' => 'smtp_provider e.g.smtp.gmail.com',
 		    'Username' => "email",
 		    'Password' => "app_password",
@@ -451,7 +451,23 @@ class Library
 		    'SMTPSecure' => "ssl/tls",
 		    'from_email' => 'email',
 		 ),
-		 'test' => array(
+		 'mail_test' => array(
+		    'host' => 'smtp_provider e.g.smtp.gmail.com',
+		    'Username' => "email",
+		    'Password' => "app_password",
+		    'Port' => "Port Number",
+		    'SMTPSecure' => "ssl/tls",
+		    'from_email' => 'email',
+		 ),
+		 'twilio_test' => array(
+		    'sid' => 'sid',
+		    'token' => "token",
+		    'phone_number_from' => "+00000",
+		    'Port' => "Port Number",
+		    'SMTPSecure' => "ssl/tls",
+		    'from_email' => 'email',
+		 ),
+		 'twilio_live' => array(
 		    'host' => 'smtp_provider e.g.smtp.gmail.com',
 		    'Username' => "email",
 		    'Password' => "app_password",
@@ -463,22 +479,12 @@ class Library
 	      return $credentialsAr[$key];
    	}
 
-	public function twilio_access_token()
+	public function include_source($type  = 'php')
 	{
-		$sid = 'sid'; //test sid // don't keep personal sid for your security
-		$token = 'access_token'; //test token // don't keep personal token for your security
-		$phone_number_from = '+0000000'; //test phone_number_from // don't keep personal phone_number_from for your security
-		$credentials = array();
-		$credentials['sid'] = $sid;
-		$credentials['token'] = $token;
-		$credentials['phone_number_from'] = $phone_number_from;
-		return $credentials;
-	}
-
-	public function include_phpmailer()
-	{
-		require_once $this->lib_path . "/PHPMailer/PHPMailer.php";
-		require_once $this->lib_path . "/PHPMailer/SMTP.php";
-		require_once $this->lib_path . "/PHPMailer/Exception.php";
+		if ($type == 'php') {
+			require_once "PHPMailer/PHPMailer.php";
+			require_once "PHPMailer/SMTP.php";
+			require_once "PHPMailer/Exception.php";
+		}
 	}
 }
