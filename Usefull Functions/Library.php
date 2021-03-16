@@ -54,6 +54,41 @@ class Library
 		);
 
 	}
+	
+	public function upload_file($file, $file_name, $path)
+	{
+		$file_name = $file_name;
+		$target_dir = '';
+		$path = rtrim($path, "/");
+		if (!file_exists($target_dir . $path) && strlen(trim($path)) > 0) {
+			mkdir($target_dir . $path);
+			chmod($target_dir . $path, 0755);
+		}
+		$target_dir = $path . '/';
+		$target_dir_post = $path . '/';
+		$base_file = basename($file["name"]);
+		$extension = strtolower(pathinfo($base_file, PATHINFO_EXTENSION));
+		$file_name_new = basename($file["name"]);
+		if (strlen(trim($file_name)) > 0) {
+			$file_name_new = $file_name . '.' . $extension;
+		}
+		$target_file = $target_dir . $file_name_new;
+		$target_file_post = $target_dir_post . $file_name_new;
+
+		if (!move_uploaded_file($file["tmp_name"], $target_file)) {
+			$return_array['status'] = 'warn';
+			$return_array['message'] = "WARNING! there was an error uploading your file. Please contact IT support";
+			$return_array['base_path'] = '';
+			$return_array['image_name'] = '';
+		} else {
+			$return_array['status'] = 'success';
+			$return_array['message'] = "SUCCESS! Uploaded successfully";
+			$return_array['base_path'] = $target_file_post;
+			$return_array['image_name'] = $file_name_new;
+			
+		}
+		return $return_array;
+	}
 
 	public function get_public_ip()
 	{
