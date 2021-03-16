@@ -12,10 +12,16 @@ class Library
 	public $admin_send = false;
 	public $attachment;
 	public $path;
-
+	private $test_servers;
+	public $send_test;
 	function __construct()
 	{
-		date_default_timezone_set('Asia/Qatar');
+		date_default_timezone_set('Asia/Kolkata');
+		$this->test_servers = array(
+			'IP / DOMAIN',
+			'localhost',
+		);
+		$this->send_test = true
 		$this->from_email = "test@test.com";
 		$this->from_email_name = "tester";
 		$this->attachment = array();
@@ -302,7 +308,7 @@ class Library
 		return $arabic_array[$number];
 	}
 
-	public function send_mail($reciever, $subject, $message, $attachments = array())
+	public function send_mail($reciever, $subject, $message, $attachments = array(),$from_email_name = '',$auto_gen_email = false)
 	{
 		// require $this->lib_path . 'phpmailer/PHPMailerAutoload.php';
 		$return_array = array();
@@ -317,18 +323,47 @@ class Library
 		$mail->Port = $credentials['Port'];
 		$mail->SMTPSecure = $credentials['SMTPSecure'];
 		$mail->isHTML(true);
-		$mail->setFrom($this->from_email, $this->from_email_name);
-		$get_admin_email = $this->get_admin_email();
-		foreach ($reciever as $key => $emails) {
-			$mail->addAddress($emails['email']);
-		}
+		if ($from_email_name != '') {
+			$mail->setFrom($this->from_email, $this->from_email_name);
+	      	} else {
+			$mail->setFrom($this->from_email, $from_email_name);
+	      	}
+		if (in_array($_SERVER['SERVER_NAME'],$this->test_servers) && $this->send_test == true) {
+			$mail->addAddress('developer@developer.com', 'developer');
+		} else {
+			foreach ($reciever as $key => $emails) {
+			    $email = $emails['email'];
+			    if (isset($emails['name'])) {
+			       $name = $emails['name'];
+			    } else {
+			       $name = '';
+			    }
+			    if (isset($emails['type'])) {
+			       $type = strtolower($emails['type']);
+			       if ($type == 'to' || $type == 'mail') {
+				  $mail->addAddress($email, $name);
+			       } else if ($type == 'cc') {
+				  $mail->AddCC($email, $name);
+			       } else if ($type == 'bcc') {
+				  $mail->AddBCC($email);
+			       }
+			    } else {
+			       $mail->addAddress($email, $name);
+			    }
+			 }
+		      }
 
 		if (count($attachments) > 0) {
 			foreach ($attachments as $key => $file_path) {
 				$mail->addAttachment($file_path);
 			}
 		}
-
+		if($auto_gen_email == false){
+			$mail->addReplyTo($credentials['Username']);
+		}
+		else{
+			$mail->addReplyTo('dontreply@dontreply.com');
+		}
 		$mail->Subject = $subject;
 		$mail->Body = $message;
 
@@ -354,20 +389,44 @@ class Library
 	public function get_admin_email()
 	{
 		$array_emails = array(
-			'Rinshan' => 'test@test.com',
+			array('name' => 'test@test.com'),
 		);
 	}
 
 	public function mail_credentials()
 	{
-		$credentials = array();
-		$credentials['Username'] = 'email';
-		$credentials['Password'] = 'app_password'; //test password // don't keep personal password for your security
-    		$credentials['Port'] = 'Port number'; //test password // don't keep personal password for your security
-    		$credentials['Host'] = 'smtp_provider e.g.smtp.gmail.com'; //test password // don't keep personal password for your security
-    		$credentials['SMTPSecure'] = 'ssl/tls'; //test password // don't keep personal password for your security
-		return $credentials;
+		if (in_array($_SERVER['SERVER_NAME'],$this->test_servers)) {
+         		$credentials = $this->get_credentials('test');
+      		} else {
+         		$credentials = $this->get_credentials('live');
+      		}
+
+      		$this->from_email = $credentials['from_email'];
 	}
+	
+	public function get_credentials($key)
+	{
+	      //https://www.powershellgallery.com/packages/ExchangeOnlineManagement/2.0.3
+	      $credentialsAr = array(
+		 'live' => array(
+		    'host' => 'smtp_provider e.g.smtp.gmail.com',
+		    'Username' => "email",
+		    'Password' => "app_password",
+		    'Port' => "Port Number",
+		    'SMTPSecure' => "ssl/tls",
+		    'from_email' => 'email',
+		 ),
+		 'test' => array(
+		    'host' => 'smtp_provider e.g.smtp.gmail.com',
+		    'Username' => "email",
+		    'Password' => "app_password",
+		    'Port' => "Port Number",
+		    'SMTPSecure' => "ssl/tls",
+		    'from_email' => 'email',
+		 ),
+	      );
+	      return $credentialsAr[$key];
+   	}
 
 	public function twilio_access_token()
 	{
