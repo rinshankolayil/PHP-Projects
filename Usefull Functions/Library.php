@@ -152,7 +152,7 @@ class Library
 		$objWriter->save(str_replace('.php', '.xlsx', $full_path1));
 	}
 
-	public function N2W($number, $upper = true)
+	public function N2W($number, $upper = true, $without_point_zero = true, $remove_special_chars = true)
 	{
 		$in_words = $this->convert_number_to_words($number);
 		if ($upper == true) {
