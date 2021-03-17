@@ -87,6 +87,37 @@ class Library
 		}
 		return $return_array;
 	}
+	
+	public function base64DecodeImage($imageData, $file_name, $path)
+	{
+		$file_name = strtolower($file_name);
+		list($type, $imageData) = explode(';', $imageData);
+		list(, $extension) = explode('/', $type);
+		list(, $imageData) = explode(',', $imageData);
+		$path = rtrim($path, "/");
+		$path = ltrim($path, "/");
+		$target_dir = media_path_() . $path;
+		$target_dir_post = $path . '/';
+		if (!file_exists($target_dir) && strlen(trim($path)) > 0) {
+			mkdir($target_dir);
+			chmod($target_dir, 0755);
+		}
+		if (file_exists($target_dir)) {
+			$file_name_new = $file_name . '.' . $extension;
+			$base_path = $target_dir_post . $file_name_new;
+			$full_path = $target_dir . '/' .  $file_name_new;
+			$imageData = base64_decode($imageData);
+			file_put_contents($full_path, $imageData);
+			$return_array = array();
+			$return_array['status'] = 'success';
+			$return_array['full_path'] = media_path($base_path);
+			$return_array['base_path'] = $base_path;
+		} else {
+			$return_array['status'] = 'warning';
+			$return_array['message'] = 'IMAGE UPLOADING FAILS';
+		}
+		return $return_array;
+	}
 
 	public function get_public_ip()
 	{
