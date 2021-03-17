@@ -8,4 +8,5 @@
   <li>Get Your Public IP</li>
   <li>HTML Table to Excel</li>
   <li>Upload File</li>
+  <li>Base 64 Decode image</li>
 </ul>
