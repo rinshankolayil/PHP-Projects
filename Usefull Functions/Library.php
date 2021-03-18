@@ -309,7 +309,7 @@ class Library
 			$string = str_replace(" POINT ZERO ZERO", "", $string);
 		}
 		if ($remove_special_chars == true) {
-			$string = str_replace("-", "", $string);
+			$string = str_replace("-", " ", $string);
 		}
 		return $string;
 	}
