@@ -98,3 +98,6 @@ function sampling_category($combination, $existing_ids, $article_name, $first_tw
     }
     return $sub_cateogory_id;
 }
+$words = preg_replace('/[0-9]+/', '', 'ABCD12');
+$random_letter = sampling_category(array('A'),array('AB'), 'ABCD', 'A', 1);
+//$random_letter = sampling_category(array('A','B','C','D'),array('AB'), 'ABCD', 'AB', 2);
